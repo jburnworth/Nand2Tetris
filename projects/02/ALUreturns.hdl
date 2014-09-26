@@ -1,0 +1,20 @@
+/**
+ * Provides zr and ng outputs for ALU 
+ */
+
+CHIP ALUreturns {
+    IN in[16];
+    OUT out[16],
+        neg,
+	zero;
+
+    PARTS:
+    And(a=in[15],b=true,out=neg); //if MSB is set, the number is negative
+
+    Or8Way(in=in[0..7],out=notZeroA);
+    Or8Way(in=in[8..15],out=notZeroB);
+    Or(a=notZeroA,b=notZeroB,out=notZero);
+    Not(in=notZero,out=zero);  //if every bit of in is 0, set output zero
+
+    And16(a=in,b=in,out=out); //pipe the inputs back to the outputs
+}

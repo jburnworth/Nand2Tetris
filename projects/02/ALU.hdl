@@ -45,5 +45,14 @@ CHIP ALU {
         ng; // 1 if (out<0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+    ZN16(in=x,z=zx,n=nx,out=outx); //implements zx and nx control bits
+    ZN16(in=y,z=zy,n=ny,out=outy); //implements zy and ny control bits
+
+    Add16(a=outx,b=outy,out=xPlusy);
+    And16(a=outx,b=outy,out=xAndy);
+    Mux16(a=xAndy,b=xPlusy,sel=f,out=xyOut); //if f add, else and
+
+    ZN16(in=xyOut,z=false,n=no,out=outA); //if no bitwise not
+
+    ALUreturns(in=outA,out=out,neg=ng,zero=zr); //implements ng and zr returns
 }
