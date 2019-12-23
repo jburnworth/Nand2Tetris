@@ -4,7 +4,9 @@
 // File name: projects/01/Mux.hdl
 
 /** 
- * Multiplexor. If sel==1 then out=b else out=a.
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
  */
 
 CHIP Mux {
@@ -12,8 +14,8 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-        Not(in=sel, out=selNot);
-        And(a=b, b=sel, out=passB);
-        And(a=a, b=selNot, out=passA);
-	Or(a=passA, b=passB, out=out);
+    Not(in=sel, out=notSel);
+    And(a=a, b=notSel, out=aSel);
+    And(a=b, b=sel, out=bSel);
+    Or(a=aSel, b=bSel, out=out);
 }
