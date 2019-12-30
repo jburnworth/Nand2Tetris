@@ -13,5 +13,25 @@ CHIP FullAdder {
         carry;   // Left bit of a + b + c
 
     PARTS:
-    // Put you code here:
+    /*
+    Using Multiplexer and dividing in half based on input a.
+    
+    Xor(a=b, b=c, out=lowSum);
+    And(a=b, b=c, out=lowCarry);
+
+    Xor(a=b, b=c, out=notHighSum);
+    Not(in=notHighSum, out=highSum);
+    Or(a=b, b=c, out=highCarry);
+
+    Mux(a=lowSum, b=highSum, sel=a, out=sum);
+    Mux(a=lowCarry, b=highCarry, sel=a, out=carry);
+    */
+
+    /* This is a more 'addition' based approach */
+    Xor(a=b, b=c, out=bcSum);
+    Xor(a=bcSum, b=a, out=sum);
+
+    And(a=b, b=c, out=abCarry);
+    And(a=bcSum, b=a, out=sumCarry);
+    Or(a=abCarry, b=sumCarry, out=carry);
 }

@@ -1,0 +1,31 @@
+// This file is part of www.nand2tetris.org
+// by James Burnworth
+// File name: projects/02/And16Way.hdl
+
+/**
+ * And gate: 
+ * out = 1 if in[16] are all 1's
+ *       0 otherwise
+ */
+
+CHIP And16Way {
+    IN in[16];
+    OUT out;
+
+    PARTS:
+    And(a=in[0], b=in[1], out=o1);
+    And(a=in[2], b=o1, out=o2);
+    And(a=in[3], b=o2, out=o3);
+    And(a=in[4], b=o3, out=o4);
+    And(a=in[5], b=o4, out=o5);
+    And(a=in[6], b=o5, out=o6);
+    And(a=in[7], b=o6, out=o7);
+    And(a=in[8], b=o7, out=o8);
+    And(a=in[9], b=o8, out=o9);
+    And(a=in[10], b=o9, out=o10);
+    And(a=in[11], b=o10, out=o11);
+    And(a=in[12], b=o11, out=o12);
+    And(a=in[13], b=o12, out=o13);
+    And(a=in[14], b=o13, out=o14);
+    And(a=in[15], b=o14, out=out);
+}

@@ -1,0 +1,17 @@
+// This file is part of www.nand2tetris.org
+// by James Burnworth
+// File name: projects/02/Is16Neg.hdl
+
+/**
+ *  Checks the MSB of a two's compliment 16-bit input.
+ 	Returns 1 if it's 1 (negative)
+ *       0 otherwise
+ */
+
+CHIP Is16Neg {
+    IN in[16];
+    OUT out;
+
+    PARTS:
+    And(a=in[15], b=true, out=out);
+}
