@@ -23,6 +23,9 @@
  * to their new values only in the next time step. If reset==1 then the 
  * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
  * than to the address resulting from executing the current instruction. 
+ * 
+ * C - Instruction
+ *   111a cccc ccdd djjj
  */
 
 CHIP CPU {
@@ -39,5 +42,35 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    	/* Decode c-type vs a-type instruction */
+    	Mux16(a=instruction, b=aluOut, sel=instruction[15], out=aIn);
+        /* A can be loaded if it's a-type or destination in c-type includes a */
+	Not(in=instruction[15], out=aType);
+	Or(a=aType, b=instruction[5], out=loadA);
+	/* Only load d if it's a c-type and destination includes d */
+	And(a=instruction[15], b=instruction[4], out=loadD);
+	/* Only load m if it's a c-type and destination includes m */
+	And(a=instruction[15], b=instruction[3], out=writeM);
+
+	/* A and D registers */
+	ARegister(in=aIn, load=loadA, out=aOut, out[0..14]=addressM);
+	DRegister(in=aluOut, load=loadD, out=dOut);
+
+	/* Pass A or M to ALU(y) depending on c-ins 'a' bit */
+	Mux16(a=aOut, b=inM, sel=instruction[12], out=amOut);
+
+	ALU(x=dOut, y=amOut, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, out=outM, zr=zero, ng=negative);
+
+	/* Jump Decoding */
+	Not(in=negative, out=notNeg);
+	Not(in=zero, out=notZero);
+	And(a=notNeg, b=notZero, out=positive);
+	And(a=instruction[2], b=negative, out=lessThan);
+	And(a=instruction[1], b=zero, out=equalZero);
+	And(a=instruction[0], b=positive, out=greaterThan);
+	Or(a=lessThan, b=equalZero, out=lessOrEqual);
+	Or(a=lessOrEqual, b=greaterThan, out=jump);
+	And(a=instruction[15], b=jump, out=cJump);
+	PC(in=aOut, load=cJump, inc=true, reset=reset, out[0..14]=pc);
+
 }
