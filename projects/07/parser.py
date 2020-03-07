@@ -1,28 +1,26 @@
-#!/usr/local/bin/python3.8
+#!/usr/bin/env python3.8
 
 import re
 from enum import Enum, unique, auto
 
 class Parser:
-    def __init__(self, vmFile):
-        self.vmFile = vmFile
-        self.cType = None
+    def __init__(self, vmFileName, codeRightr):
+        self.vmFileName = vmFileName
+        self.codeRightr = codeRightr
     
-    def arg1(self, comm):
-        if self.cType != commType.cArithmetic:
+    def argu1(self, comm, cType):
+        if cType != commType.cArithmetic:
             return comm.split()[1]
         else:
             return comm.split()[0]
 
-    def arg2(self, comm):
+    def argu2(self, comm):
         return comm.split()[2]
 
     # Return the command type
-    def commandType(self, comm):
-        if comm:
+    def commandType(self, commLine):
+        if commLine:
 
-            # Make sure it's lower case so we aren't bamboozeled
-            comm = comm.lower()
             # Create regular expresions for each command type
             rePush = re.compile('^push')
             rePop = re.compile('^pop')
@@ -34,42 +32,61 @@ class Parser:
             reCall = re.compile('^call')
 
             # Use the first word in the command to figure out what type it is
-            if rePush.match(comm):
+            if rePush.match(commLine):
                 return commType.cPush
-            elif rePop.match(comm):
+            elif rePop.match(commLine):
                 return commType.cPop
-            elif reLabel.match(comm):
+            elif reLabel.match(commLine):
                 return commType.cLabel
-            elif reGoto.match(comm):
+            elif reGoto.match(commLine):
                 return commType.cGoto
-            elif reIf.match(comm):
+            elif reIf.match(commLine):
                 return commType.cIf
-            elif reFunction.match(comm):
+            elif reFunction.match(commLine):
                 return commType.cFunction
-            elif reReturn.match(comm):
+            elif reReturn.match(commLine):
                 return commType.cReturn
-            elif reCall.match(comm):
+            elif reCall.match(commLine):
                 return commType.cCall
             # Else it's arithmetic!:
             else:
                 return commType.cArithmetic
 
     def parseFile(self):
-        if self.vmFile:
-            vmStream = open(self.vmFile, 'r')
+        if self.vmFileName:
+            self.vmStream = open(self.vmFileName, 'r')
 
-            for line in vmStream:
-                comm = line.split("//")[0].strip() 
-                if comm:
-                    argu1 = None
-                    argu2 = None
-                    callArg2 = {commType.cPush, commType.cPop, commType.cFunction, commType.cCall}
-                    self.cType = self.commandType(comm)
-                    if self.cType != commType.cReturn:
-                        argu1 = self.arg1(comm)
-                    if self.cType in callArg2:
-                        argu2 = self.arg2(comm)
-                    print(f'{comm}\n\t{self.cType}\ta1:{argu1}\ta2:{argu2}')
+            for line in self.vmStream:
+                commLine = line.split("//")[0].strip() 
+                if commLine:
+                    # I think I don't need these.  Test it!
+                    #command = None
+                    #arg1 = None
+                    #arg2 = None
+                    maxComLength = 3
+
+                    # Make sure it's lower case so we aren't bamboozeled
+                    commLine = commLine.lower()
+
+                    # Determine the command type
+                    cType = self.commandType(commLine)
+
+                    # Turn the command into a list to store in appropriate variables
+                    commList = commLine.split()
+                    # Pad command list with 'None' in case it's too short
+                    (command, arg1, arg2) = commList[:maxComLength] + [None]*(maxComLength-len(commList))
+
+                    if cType == commType.cArithmetic:
+                        # Write out arithmetic command
+                        self.codeRightr.writeArithmetic(command)
+                    elif cType == commType.cPush or cType == commType.cPop:
+                        # Write out push or pop command
+                        self.codeRightr.writePushPop(cType, arg1, arg2)
+
+            self.close()
+
+    def close(self):
+        self.vmStream.close()
 
 @unique
 class commType(Enum):
