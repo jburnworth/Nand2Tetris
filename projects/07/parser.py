@@ -59,12 +59,6 @@ class Parser:
             for line in self.vmStream:
                 commLine = line.split("//")[0].strip() 
                 if commLine:
-                    # I think I don't need these.  Test it!
-                    #command = None
-                    #arg1 = None
-                    #arg2 = None
-                    maxComLength = 3
-
                     # Make sure it's lower case so we aren't bamboozeled
                     commLine = commLine.lower()
 
@@ -74,7 +68,8 @@ class Parser:
                     # Turn the command into a list to store in appropriate variables
                     commList = commLine.split()
                     # Pad command list with 'None' in case it's too short
-                    (command, arg1, arg2) = commList[:maxComLength] + [None]*(maxComLength-len(commList))
+                    comLength = 3
+                    (command, arg1, arg2) = commList[:comLength] + [None]*(comLength-len(commList))
 
                     if cType == commType.cArithmetic:
                         # Write out arithmetic command
