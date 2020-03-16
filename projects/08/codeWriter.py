@@ -13,6 +13,31 @@ class CodeWriter:
         self.functionIter = 0
         self.currentFunc = 'Sys.main'
 
+    def writeFunction(self, name, numArgs):
+        print('functionin')
+        asmStr = f'// Function Def - {name} with {numArgs} argurments\n'
+        asmStr += f'({name})\n'
+        # Push a 0 to the stack for the number of local arguments
+        for i in range(int(numArgs)):
+            asmStr += '@0\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n'
+
+        # Write the finished asembly string to the output file
+        self.asmStream.write(asmStr)
+
+    def writeReturn(self):
+        print('returnin')
+        asmStr = f'// Return call\n'
+        # Hold LCL in temp variable FRAME
+        asmStr += 
+        # Hold return address in temp variable RET (FRAME - 5)
+        # Pop from bottom of stack to first ARG, move return value to where it's expected
+        # Set SP to ARG + 1
+        # THAT = FRAME - 1
+        # THIS = FRAME - 2
+        # ARG  = FRAME - 3
+        # LCL  = FRAME - 4
+        # goto RET
+
     def writeLabel(self, label):
         print('labelin')
         # Use notation function$label to scope labels to function

@@ -86,6 +86,9 @@ class Parser:
                     elif cType == commType.cIf:
                         # Call write if-goto and pass arg1, the label name
                         self.codeRightr.writeIf(arg1)
+                    elif cType == commType.cFunction:
+                        # Call write function and pass arg1, function name, and arg2, num of func args
+                        self.codeRightr.writeFunction(arg1, arg2)
 
             self.close()
 
