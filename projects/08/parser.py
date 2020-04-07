@@ -1,6 +1,8 @@
 #!/usr/bin/env python3.8
 
 import re
+import os
+
 from enum import Enum, unique, auto
 
 class Parser:
@@ -55,6 +57,9 @@ class Parser:
     def parseFile(self):
         if self.vmFileName:
             self.vmStream = open(self.vmFileName, 'r')
+            # Get the name of the file, no path, no extension
+            vmShortName = [i for i in os.path.splitext(self.vmFileName)[0].split('/') if i][-1]
+            print(f'Working on file: {vmShortName}')
 
             for line in self.vmStream:
                 commLine = line.split("//")[0].strip() 
@@ -75,8 +80,8 @@ class Parser:
                         # Write out arithmetic command
                         self.codeRightr.writeArithmetic(command)
                     elif cType == commType.cPush or cType == commType.cPop:
-                        # Write out push or pop command
-                        self.codeRightr.writePushPop(cType, arg1, arg2)
+                        # Write out push or pop command, pass the vm file name to scope the static variables
+                        self.codeRightr.writePushPop(cType, arg1, arg2, vmShortName)
                     elif cType == commType.cLabel:
                         # Call write label and pass arg1, the label name
                         self.codeRightr.writeLabel(arg1)
@@ -87,8 +92,14 @@ class Parser:
                         # Call write if-goto and pass arg1, the label name
                         self.codeRightr.writeIf(arg1)
                     elif cType == commType.cFunction:
-                        # Call write function and pass arg1, function name, and arg2, num of func args
+                        # Call write function and pass arg1, the function name, and arg2, the num of func args
                         self.codeRightr.writeFunction(arg1, arg2)
+                    elif cType == commType.cReturn:
+                        # Call write return
+                        self.codeRightr.writeReturn()
+                    elif cType == commType.cCall:
+                        # Call call function, pass arg1, function name, and arg2, num of function arguments
+                        self.codeRightr.writeCall(arg1, arg2)
 
             self.close()
 

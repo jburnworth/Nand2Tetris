@@ -14,9 +14,11 @@ vmProj = os.path.splitext(vmInput)[0]
 
 # Populate list of input .vm files
 vmFileArray = []
+# Check for a single file being passed
 if os.path.isfile(vmInput) and '.vm' in vmInput:
     # Input is a .vm file
     vmFileArray.append(vmInput)
+# Check for a directory being passed
 elif os.path.isdir(vmInput):
     # Input is a directory, put all .vm files from dir into list
     for file in os.listdir(vmInput):
