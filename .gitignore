@@ -3,3 +3,4 @@
 *.dat
 *.hack
 *.pyc
+projects/09/**/*.vm

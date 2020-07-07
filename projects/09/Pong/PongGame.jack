@@ -1,0 +1,66 @@
+class PongGame {
+    field Ball ball;
+    field Paddle paddle;
+    field int direction;        // 0=Still, 1=Left, 2=Right
+    field boolean gameOver;
+
+    constructor PongGame new() {
+        // Create an 11 x 11 pixel square and center it in the screen
+        let ball = Ball.new();
+        let paddle = Paddle.new();
+        return this;
+    }
+
+    /** Dospose of this game. */
+    method void dispose() {
+        do ball.dispose();
+        do paddle.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void updateScreen() {
+        // Check if we need to move the paddle
+        if (direction = 1) { do paddle.moveLeft(); }
+        if (direction = 2) { do paddle.moveRight(); }
+
+        // Update ball position
+        if ( ~ball.move(paddle) ) {
+            let gameOver = true;
+        }
+
+        do Sys.wait(5);
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var booolean exit;
+        let exit = false;
+        let gameOver = false;
+
+        while (~exit) {
+            if ( gameOver ) {
+                let exit = true;
+            }
+            // Wait for a key to be pressed
+            while (key = 0) {
+                let direction = 0;
+                let key = Keyboard.keyPressed();
+                //do Output.moveCursor(9, 0);
+                //do Output.printChar(67);
+                do updateScreen();
+            }
+            if (key = 81) { let exit = true; }      // Press 'q' to exit
+            if (key = 130) { let direction = 1; }   // Left arrow
+            if (key = 132) { let direction = 2; }   // Right arrow
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                //do Output.moveCursor(9, 0);
+                //do Output.printChar(70);
+                do updateScreen();
+            }
+        }
+        return;
+    }
+}

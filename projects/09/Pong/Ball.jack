@@ -1,0 +1,101 @@
+class Ball {
+    field int x, y; // Screen location of balls top-left corner
+    field int size; // Size of ball
+    field int velocityX, velocityY;
+
+    constructor Ball new() {
+        let x = 245;
+        let y = 20;
+        let size = 10;
+        let velocityX = 1;     // Only use 1 or -1, other speeds mess up the redrawing.
+        let velocityY = -1;     // Only use 1 or -1, other speeds mess up the redrawing.
+        do draw();
+        return this;
+    }
+
+    /** Dispose of this ball */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Draw the square on screen */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** Check if the ball has hit a wall and change velocity if needed. */
+    method boolean bounceCheck(Paddle paddle) {
+        var boolean doesItBounce;
+        if ((x < 2) | (x > 499)) {
+            let velocityX = -velocityX;
+        }
+        if (y < 2) {
+            let velocityY = -velocityY;
+        }
+        if (y > 232) {
+            // Check for a bounce with the paddle
+            let doesItBounce = paddle.paddleBounce(x, size);
+            if (doesItBounce) {
+                let velocityY = -velocityY;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Update balls position */
+    method boolean move(Paddle paddle) {
+        //do bounceCheck(paddle);
+        if ( ~bounceCheck(paddle) ) {
+            return false;
+        }
+        // Remove trailing edge of ball in X
+        //do Output.moveCursor(10, 0);
+        do Screen.setColor(false);
+        if ( velocityX > 0 ) {
+            // Going right. Remove left edge
+            //do Output.printString("Remove Left");
+            do Screen.drawRectangle(x, y, x + velocityX, y + size);
+        } else {
+            // Going left. Remove right edge
+            //do Output.printString("Remove Right");
+            do Screen.drawRectangle((x + size) + velocityX, y, x + size, y + size);
+        }
+        // Remove trailing edge of ball in Y
+        //do Output.moveCursor(11, 0);
+        if ( velocityY > 0 ) {
+            // Going up. Remove bottom edge
+            //do Output.printString("Remove Bottom");
+            do Screen.drawRectangle(x, (y + size) - velocityY, x + size, y + size);
+        } else {
+            // Going down. Remove top edge
+            //do Output.printString("Remove Top");
+            do Screen.drawRectangle(x, y, x + size, y - velocityY);
+        }
+        // Move top-left corner
+        let x = x + (velocityX * 2);
+        let y = y - (velocityY * 2);
+        // Add new edge of ball in X
+        do Screen.setColor(true);
+        if ( velocityX > 0) {
+            // Going right. Add right edge.
+            do Screen.drawRectangle((x + size) - velocityX, y, x + size, y + size);
+        } else {
+            // Going left.  Add left edge.
+            do Screen.drawRectangle(x, y, x - velocityX, y + size);
+        }
+        // Add new edge of ball in Y
+        if ( velocityY > 0 ) {
+            // Going up. Add top edge.
+            do Screen.drawRectangle(x, y, x + size, y + velocityY);
+        } else {
+            // Going down. Add bottom edge.
+            do Screen.drawRectangle(x, (y + size) + velocityY, x + size, y + size);
+        }
+        return true;
+    }
+}
