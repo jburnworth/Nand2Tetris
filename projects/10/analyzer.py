@@ -33,9 +33,16 @@ if len(jackFileArray) < 1:
     print('No .jack files found: Pass path to a .jack file or a directory containing .jack files')
     sys.exit(1)
 
+# Analyze found .jack files
 for jackFile in jackFileArray:
     # Tokenize the file.
+    aTokenizer = tokenizer.Tokenizer(jackFile)
+    tokenz = aTokenizer.getTokenDict()
+
+    # Write tokens as xml file
+    xmlOut = open(os.path.splitext(jackFile)[0] + '.xml', 'w')
+    for token in tokenz:
+        xmlOut.write(token + '\n')
+    xmlOut.close()
+
     # Compile tokens
-print(project)
-print(jackFileArray)
-print(len(jackFileArray))
