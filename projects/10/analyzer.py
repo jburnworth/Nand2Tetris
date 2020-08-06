@@ -42,7 +42,8 @@ for jackFile in jackFileArray:
     # Write tokens as xml file
     xmlOut = open(os.path.splitext(jackFile)[0] + '.xml', 'w')
     for token in tokenz:
-        xmlOut.write(token + '\n')
+        True
+        #xmlOut.write(token + '\n')
     xmlOut.close()
 
     # Compile tokens
