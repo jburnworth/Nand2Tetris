@@ -82,8 +82,6 @@ class Tokenizer:
 
         #for z in tokenz:
             #print(z)
-        print('Token List:')
-        for z in tokenList:
-            print(f'{z.type}\t\t{z.value}')
+
         #print(tokenz)
         return tokenList

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.8
 
 import tokenizer
-#import compilation
+import compilationEngine
 
 import sys, os
 
@@ -39,11 +39,5 @@ for jackFile in jackFileArray:
     aTokenizer = tokenizer.Tokenizer(jackFile)
     tokenz = aTokenizer.getTokenDict()
 
-    # Write tokens as xml file
-    xmlOut = open(os.path.splitext(jackFile)[0] + '.xml', 'w')
-    for token in tokenz:
-        True
-        #xmlOut.write(token + '\n')
-    xmlOut.close()
-
-    # Compile tokens
+    # Write tokens of jack file as an xml file
+    compilationEngine.CompliationEngine(jackFile, tokenz)
