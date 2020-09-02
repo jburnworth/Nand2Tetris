@@ -39,5 +39,12 @@ for jackFile in jackFileArray:
     aTokenizer = tokenizer.Tokenizer(jackFile)
     tokenz = aTokenizer.getTokenDict()
 
+    # Write the token xml file
+    xmlOut = open(os.path.splitext(jackFile)[0] + 'TT.xml', 'w')
+    xmlOut.write('<tokens>\n')
+    for tok in tokenz:
+        xmlOut.write('<' + tok.type + '> ' + tok.value + ' </' + tok.type + '>\n')
+    xmlOut.write('</tokens>\n')
+
     # Write tokens of jack file as an xml file
-    compilationEngine.CompliationEngine(jackFile, tokenz)
+    #compilationEngine.CompliationEngine(jackFile, tokenz)

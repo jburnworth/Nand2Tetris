@@ -71,10 +71,10 @@ class Tokenizer:
             elif tok in jackSymbols:
                 tokenList.append(Token('symbol', tok))
             elif tok in stringToks:
-                tokenList.append(Token('string_const', tok))
+                tokenList.append(Token('stringConstant', tok))
             elif representsInt(tok):
                 if int(tok) in range(0,32767):
-                    tokenList.append(Token('int_const', tok))
+                    tokenList.append(Token('integerConstant', tok))
                 else:
                     print(f'Error: Int {tok} out of range (0..32767)')
             else:
